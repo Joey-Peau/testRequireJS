@@ -12,21 +12,44 @@ define(["jquery"],function($){
 				throw new TypeError('"getType" getter must be implemented');
 			}
 
+			if(this.triggerRefresh === undefined){
+				throw new TypeError('"triggerRefresh" getter must be implemented');
+			}
+
+			if(this.strength === undefined){
+				throw new TypeError('"triggerRefresh" getter must be implemented');
+			}
+
+			if(this.endurance === undefined){
+				throw new TypeError('"triggerRefresh" getter must be implemented');
+			}
+
+			if(this.agility === undefined){
+				throw new TypeError('"triggerRefresh" getter must be implemented');
+			}
+
+			if(this.wisdom === undefined){
+				throw new TypeError('"triggerRefresh" getter must be implemented');
+			}
+
 			this.level = 1;
-			
-			this.baseLP = 100;
-			this.MaxLP 	= 100;
-			this.LP 	= 100;
 
 			this.isKillable = true;
 
+			this.baseLP 			= 100;
 			this.baseAttackPoints 	= 100;
 			this.baseDefensePoints 	= 100;
+			/** 10% of base Life Points **/
+			this.baseHealingPoints 	= 10;
 
-			this.strength 	= 0;
-			this.endurance 	= 0;
-			this.agility 	= 0;
+			this.initMaxLP();
 
+			this.resetLP();
+
+		}
+
+		initMaxLP(){
+			this.maxLP = this.baseLP * this.level * (1 + Math.random() * this.endurance);
 		}
 
 
@@ -40,12 +63,34 @@ define(["jquery"],function($){
 				lpToRemove = 0;
 			}
 
-			this.LP -= lpToRemove;
+			this.LP -= parseInt(lpToRemove);
 
 			if(this.LP <= 0 && !this.isKillable){
 				this.LP = 1;
 			}
 
+			this.triggerRefresh();
+
+		}
+
+		resetLP(){
+			this.LP = this.getMaxLP;
+		}
+
+		heal(){
+			lpRestored = this.getHealingPoints;
+			this.LP += lpRestored;
+
+			if(this.LP > this.getMaxLP){
+				this.LP = this.getMaxLP;
+			}
+
+			this.triggerRefresh();
+		}
+
+		get getHealingPoints(){
+			let $finalValue = this.baseHealingPoints * this.level * (1 + Math.random() * this.strength) / 100;
+			return parseInt($finalValue);
 		}
 
 		get getAttackPoints(){
@@ -53,6 +98,10 @@ define(["jquery"],function($){
 		}
 		get getDefensePoints(){
 			return this.baseDefensePoints * this.level * (1 + Math.random() * this.agility) / 100;
+		}
+
+		get getMaxLP(){
+			return parseInt(this.maxLP);
 		}
 
 		get getLevel(){
@@ -63,16 +112,16 @@ define(["jquery"],function($){
 			return this.LP;
 		}
 
-		get getMaxLP(){
-			return this.LP * this.level * (1 + Math.random() * this.endurance);
-		}
-
 		isDead(){
 			return this.isKillable && this.LP <= 0;
 		}
 
 		print(){
-			return "Je suis un " + this.getType;
+			return "Je suis un " + this.getType + "\n" + this.getLP + "/" + this.getMaxLP + " LP\n" + this.getAttackPoints + " AP\n" + this.getDefensePoints + " DP";
+		}
+
+		triggerRefresh(){
+
 		}
 
 
