@@ -8,7 +8,8 @@ requirejs.config({
       "app": "../app",
       "characters": "../characters",
       "panels": "../panels",
-      "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min"
+      "jquery": "https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min",
+      "jquery-ui": "https://code.jquery.com/ui/1.12.1/jquery-ui.min"
     }
 });
 

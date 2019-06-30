@@ -1,31 +1,19 @@
-define(["jquery","characters/character"],function($,characterClass){
+define(["jquery","characters/enemy"],function($,enemyClass){
 
 
-	return class Monster extends characterClass{
+	return class Monster extends enemyClass{
 
-		strength 	= Math.random() * 5;
-		endurance 	= Math.random() * 4;
-		agility 	= Math.random() * 3;
-		wisdom		= 0;
 
 		get getType(){
 			return "Monster";
 		}
 
-		get strength(){
-			return Math.random() * 5;
-		}
-
-		get endurance(){
-			return Math.random() * 4;
-		}
-
-		get agility(){
-			return Math.random() * 3;
-		}
-
-		get wisdom(){
-			return 0;
+		initVar(){
+			this.strength 	= parseInt(Math.random() * (5 + this.level));
+			this.endurance 	= parseInt(Math.random() * (4 + this.level));
+			this.agility 	= parseInt(Math.random() * (3 + this.level));
+			this.wisdom		= parseInt(Math.random() * (0 + this.level));
+			this.chance		= parseInt(Math.random() * (1 + this.level));
 		}
 
 	}

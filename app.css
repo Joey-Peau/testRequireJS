@@ -1,0 +1,34 @@
+.barContainer{
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 5px;
+  background: #ddd;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  margin: 10px;
+  height: 30px;
+  width: 100%;
+  position: relative;
+}
+
+.barLabel{
+	position: absolute;
+	left: 50%;
+	height: 100%;
+	top: 5px;
+}
+
+.barValue{
+  height: 20px;
+}
+
+.leftPanel, .rightPanel{
+	width : 50%;
+	display: inline-block;
+}
+
+.panel .barContainer{
+	width: 90%;
+}

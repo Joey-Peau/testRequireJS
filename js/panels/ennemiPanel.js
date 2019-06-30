@@ -1,3 +1,10 @@
-define(['jquery','panels/panel'],function($,panelClass){
+define(['jquery','panels/characterPanel'],function($,charPanelClass){
+
+	return class EnemmiPanelClass extends charPanelClass{
+
+		constructor(character){
+			super(character);
+		}
+	}
 
 });

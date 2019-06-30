@@ -1,9 +1,10 @@
-define(["jquery"],function($){
+define(["jquery","progressBar","eventEmitter"],function($,progressBarClass,eventEmitter){
 
 	return class Character{
+		emitter;
 
-
-		constructor(){
+		constructor(level){
+			this.emitter = new eventEmitter();
 			if (this.constructor === Character){
       			throw new TypeError('Abstract class "Character" cannot be instantiated directly');
 			}
@@ -12,44 +13,79 @@ define(["jquery"],function($){
 				throw new TypeError('"getType" getter must be implemented');
 			}
 
-			if(this.triggerRefresh === undefined){
-				throw new TypeError('"triggerRefresh" getter must be implemented');
+			this.level = 1;
+			if(typeof(level) !== "integer"){
+				this.level = level;
 			}
 
+
+			this.initVar();
+
 			if(this.strength === undefined){
-				throw new TypeError('"triggerRefresh" getter must be implemented');
+				this.strength = 0;
 			}
 
 			if(this.endurance === undefined){
-				throw new TypeError('"triggerRefresh" getter must be implemented');
+				this.endruance = 0;
 			}
 
 			if(this.agility === undefined){
-				throw new TypeError('"triggerRefresh" getter must be implemented');
+				this.agility = 0;
 			}
 
 			if(this.wisdom === undefined){
-				throw new TypeError('"triggerRefresh" getter must be implemented');
+				this.wisdom = 0;
 			}
 
-			this.level = 1;
+			if(this.chance === undefined){
+				this.chance = 0;
+			}
+
 
 			this.isKillable = true;
 
 			this.baseLP 			= 100;
+			this.baseMP 			= 100;
 			this.baseAttackPoints 	= 100;
 			this.baseDefensePoints 	= 100;
-			/** 10% of base Life Points **/
+			/** 1% of base Life Points **/
 			this.baseHealingPoints 	= 10;
 
 			this.initMaxLP();
-
 			this.resetLP();
+
+			this.initMaxMP();
+			this.resetMP();
+
 
 		}
 
+		get getStrength(){
+			return this.strength ;
+		}
+
+		get getEndurance(){
+			return this.endurance;
+		}
+
+		get getAgility(){
+			return this.agility;
+		}
+
+		get getWisdom(){
+			return this.wisdom;
+		}
+
+		get getChance(){
+			return this.chance;
+		}
+
 		initMaxLP(){
-			this.maxLP = this.baseLP * this.level * (1 + Math.random() * this.endurance);
+			this.maxLP = this.baseLP * (this.getLevel + Math.random()) * (this.getEndurance + 1);
+		}
+
+		initMaxMP(){
+			this.maxMP = this.baseMP + (this.getLevel + Math.random() * (this.getWisdom + 1));
 		}
 
 
@@ -60,16 +96,28 @@ define(["jquery"],function($){
 			lpToRemove = character.getAttackPoints - this.getDefensePoints;
 
 			if(lpToRemove < 0){
-				lpToRemove = 0;
+				lpToRemove = character.getAttackPoints * 0.1;
+				this.triggerEvent("miss");
 			}
 
-			this.LP -= parseInt(lpToRemove);
+			if(character.getChance >= Math.random() * 100){
+				lpToRemove *= 2;
+				this.triggerEvent("critical");
+			}
+			this.triggerEvent("attack",{ lpRemoved: lpToRemove} );
 
-			if(this.LP <= 0 && !this.isKillable){
-				this.LP = 1;
+			this.LP -= lpToRemove;
+
+			if(this.LP <= 0){
+				if(!this.isKillable){
+					this.LP = 1;
+				}else{
+					this.LP = 0;
+					this.triggerEvent("dead");
+				}
 			}
 
-			this.triggerRefresh();
+			this.triggerEvent("refresh");
 
 		}
 
@@ -77,51 +125,81 @@ define(["jquery"],function($){
 			this.LP = this.getMaxLP;
 		}
 
+		resetMP(){
+			this.MP = this.getMaxMP;
+		}
+
 		heal(){
-			lpRestored = this.getHealingPoints;
+			let manaUsed = 1 + Math.random() * (1 + this.getLevel) / (1 + this.getWisdom);
+
+			let lpRestored = this.getHealingPoints;
 			this.LP += lpRestored;
 
 			if(this.LP > this.getMaxLP){
 				this.LP = this.getMaxLP;
 			}
 
-			this.triggerRefresh();
+			if(this.getMP - manaUsed < 0){
+				this.triggered("outOfMana");
+			}else{
+				this.MP -= manaUsed;
+				this.triggerEvent("healed");
+			}
+
+			this.triggerEvent("refresh",{lpRestored : lpRestored});
 		}
 
 		get getHealingPoints(){
-			let $finalValue = this.baseHealingPoints * this.level * (1 + Math.random() * this.strength) / 100;
-			return parseInt($finalValue);
+			let $finalValue = this.baseHealingPoints * this.getLevel * (10 + Math.random() * this.getWisdom);
+			return $finalValue;
 		}
 
 		get getAttackPoints(){
-			return this.baseAttackPoints * this.level * (1 + Math.random() * this.strength) / 100;
+			return this.baseAttackPoints * this.getLevel * (1 + Math.random() * this.getStrength);
 		}
 		get getDefensePoints(){
-			return this.baseDefensePoints * this.level * (1 + Math.random() * this.agility) / 100;
+			return this.baseDefensePoints * this.getLevel * (1 + Math.random() * this.getAgility);
 		}
 
 		get getMaxLP(){
 			return parseInt(this.maxLP);
 		}
 
+		get getMaxMP(){
+			return parseInt(this.maxMP);
+		}
+
 		get getLevel(){
-			return this.level;
+			return parseInt(this.level);
 		}
 
 		get getLP(){
-			return this.LP;
+			return this.LP <=0 ? 0 : parseInt(this.LP);
+		}
+
+		get getMP(){
+			return this.MP <=0 ? 0 : parseInt(this.MP);
 		}
 
 		isDead(){
-			return this.isKillable && this.LP <= 0;
+			return this.isKillable && this.getLP <= 0;
 		}
 
 		print(){
-			return "Je suis un " + this.getType + "\n" + this.getLP + "/" + this.getMaxLP + " LP\n" + this.getAttackPoints + " AP\n" + this.getDefensePoints + " DP";
+			console.log("Je suis un " + this.getType + "\n" + this.getLP + "/" + this.getMaxLP + " LP\n" + this.getAttackPoints + " AP\n" + this.getDefensePoints + " DP");
 		}
 
-		triggerRefresh(){
+		initVar(){
+			this.strength 	= 0;
+			this.endurance 	= 0;
+			this.agility 	= 0;
+			this.wisdom		= 0;
+		}
 
+		triggerEvent(eventToTrigger,data){
+			this.emitter.emitEvent(eventToTrigger,data);
+
+			//console.log(this.constructor.name + " triggered " + eventToTrigger + " with data " + JSON.stringify(data));
 		}
 
 
