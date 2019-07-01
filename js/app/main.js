@@ -1,6 +1,6 @@
 define(
-	["jquery","characters/hero","characters/monster","panels/heroPanel",'panels/ennemiPanel','panels/actionPanel'], 
-	function($,heroClass, monsterClass,heroPanelClass, ennemiPanelClass,actionPanelClass) {
+	["jquery","characters/hero","characters/monster","panels/heroPanel",'panels/ennemiPanel','panels/actionPanel','panels/HistoPanel'], 
+	function($,heroClass, monsterClass,heroPanelClass, ennemiPanelClass,actionPanelClass,histoPanelClass) {
 
 		let hero = new heroClass(1);
 		let monster = new monsterClass(parseInt(1 + Math.random() * hero.getLevel));
@@ -10,12 +10,15 @@ define(
 		let heroPanel 	= new heroPanelClass(hero);
 		let ennemyPanel = new ennemiPanelClass(monster);
 		let actionPanel = new actionPanelClass();
+		let histoPanel 	= new histoPanelClass();
 
 		let heroDiv 	= heroPanel.getPanel().addClass("leftPanel");
 		let ennemiDiv 	= ennemyPanel.getPanel().addClass("rightPanel");
-		let actionDiv 	= actionPanel.getPanel().addClass("bottomPanel");
+		let actionDiv 	= actionPanel.getPanel().addClass("topPanel");
+		let histoDiv 	= histoPanel.getPanel().addClass("bottomPanel");
 
 		actionPanel.emitter.on("heal",function(){
+			histoPanel.appendText("Hero healed");
 			hero.heal();
 
 			hero.attackedBy(monster);
@@ -45,7 +48,7 @@ define(
 		refreshActionPanel(monster);
 		refreshMonster(monster);
 
-		$("body").append(heroDiv).append(ennemiDiv).append(actionDiv);
+		$("body").append(actionDiv).append(heroDiv).append(ennemiDiv).append(histoDiv);
 
 		function refreshActionPanel(oldMonster){
 		}
@@ -53,6 +56,7 @@ define(
 		function refreshMonster(newMonster){
 
 			newMonster.emitter.once("dead",function(){
+				histoPanel.appendText(newMonster.getType + " is dead");
 				hero.addExperiencePoints(newMonster.getExpGiven);
 				monster = new monsterClass(hero.getLevel);
 
