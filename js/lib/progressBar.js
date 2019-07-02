@@ -17,9 +17,9 @@ define(["jquery"],function($){
 			this.uuid = this.create_UUID();
 
 
-			this.barContainer = $("<div></div>").attr("id",this.uuid).addClass("barContainer");
+			this.barContainer = $("<div></div>").attr("id",this.uuid).addClass("progress").css({height : "20px", margin: "10px"});
 
-			this.barValue = $("<div></div>").addClass("barValue");
+			this.barValue = $("<div></div>").addClass("progress-bar").attr("role","progressbar");
 			this.textSpan = $("<span></span>").addClass("barLabel");
 
 		}
@@ -46,7 +46,11 @@ define(["jquery"],function($){
 		}
 
 		refreshBarValue(){
-			this.barValue = $(this.barValue).css({ width : (this.value / this.max * 100) + "%", background: this.color });
+			this.barValue = $(this.barValue)
+				.attr("aria-valuenow",this.value)
+				.attr("aria-valuemin",0)
+				.attr("aria-valuemax",this.max)
+				.css({ background: this.color, width: (this.value / this.max) * 100 + "%" });
 		}
 
 		resetBar(value,max,color){

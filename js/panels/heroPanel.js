@@ -1,6 +1,8 @@
-define(['jquery','panels/characterPanel'],function($,charPanelClass){
+define(['jquery','panels/characterPanel','progressBar'],function($,charPanelClass,progressbarClass){
 
 	return class heroPanelClass extends charPanelClass {
+
+		expProgress;
 
 		constructor(character){
 			if(typeof(character) !== "object" || character.constructor.name !== "Hero"){
@@ -12,8 +14,16 @@ define(['jquery','panels/characterPanel'],function($,charPanelClass){
 
 		refreshStatus(){
 			super.refreshStatus();
-			this.status = $(this.status).html($(this.status).html()
-				+ "<br/>Experience points : " + parseInt(this.character.getExp) + "/" + parseInt(this.character.getNextExpCap)) ;
+			if(this.expProgress === undefined){
+				this.expProgress = new progressbarClass(parseInt(this.character.getExp),parseInt(this.character.getNextExpCap),"blue");
+			}
+			this.expProgress.resetBar(parseInt(this.character.getExp),parseInt(this.character.getNextExpCap),"blue");
+			this.expProgress.refresh();
+		}
+
+		buildPanel(){
+			super.buildPanel();
+			this.fullPanel.append(this.expProgress.getDiv());
 		}
 
 	}

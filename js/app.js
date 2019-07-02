@@ -9,7 +9,8 @@ requirejs.config({
       "characters": "../characters",
       "panels": "../panels",
       "jquery": "https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min",
-      "jquery-ui": "https://code.jquery.com/ui/1.12.1/jquery-ui.min"
+      "jquery-ui": "https://code.jquery.com/ui/1.12.1/jquery-ui.min",
+      "bootstrap": "bootstrap.bundle.min"
     }
 });
 

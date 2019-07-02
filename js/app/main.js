@@ -5,7 +5,7 @@ define(
 		let hero = new heroClass(1);
 		let monster = new monsterClass(parseInt(1 + Math.random() * hero.getLevel));
 
-		let gameDiv = $("<div></div>").attr("id","gamePanel").css({ width : "100%", heigth : "100%"});
+		let gameDiv = $("<div></div>").attr("id","gamePanel").addClass("container-fluid");
 
 		let heroPanel 	= new heroPanelClass(hero);
 		let ennemyPanel = new ennemiPanelClass(monster);
@@ -48,7 +48,11 @@ define(
 		refreshActionPanel(monster);
 		refreshMonster(monster);
 
-		$("body").append(actionDiv).append(heroDiv).append(ennemiDiv).append(histoDiv);
+		$topPanel = $("<div></div>").addClass("row").append($(actionDiv).addClass("col"));
+		$middlePanel = $("<div></div>").addClass("row").append($(heroDiv).addClass("col")).append($(ennemiDiv).addClass("col"));
+		$bottomPanel = $("<div></div>").addClass("row").append($(histoDiv).addClass("col"));
+
+		$("body").append($topPanel).append($middlePanel).append($bottomPanel);
 
 		function refreshActionPanel(oldMonster){
 		}
@@ -65,5 +69,14 @@ define(
 			});
 
 		}
+
+		$(function(){
+			$(".popover").each(function(){
+				_selfPopover = this;
+				$(this).popover({
+					container: "body"
+				});
+			});
+		});
 	}
 );

@@ -1,32 +1,35 @@
-.barContainer{
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 5px;
-  background: #ddd;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  margin: 10px;
-  height: 30px;
+body{
+  margin: 0;
+}
+
+.gamePanel{
   width: 100%;
-  position: relative;
+}
+
+.actionButton{
+  margin: 5px;
 }
 
 .barLabel{
 	position: absolute;
 	left: 50%;
 	height: 100%;
-	top: 5px;
+  font-weight: bold;
 }
 
 .barValue{
   height: 20px;
 }
 
+.panel{
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid;
+}
+
 .leftPanel, .rightPanel{
-	width : 50%;
 	display: inline-block;
+  vertical-align: top;
 }
 
 .panel .barContainer{
