@@ -97,14 +97,14 @@ define(["jquery","progressBar","eventEmitter"],function($,progressBarClass,event
 
 			if(lpToRemove < 0){
 				lpToRemove = character.getAttackPoints * 0.1;
-				this.triggerEvent("miss");
+				this.triggerEvent("miss",{attacker : character, attackee : this, value : lpToRemove});
 			}
 
 			if(character.getChance >= Math.random() * 100){
 				lpToRemove *= 2;
-				this.triggerEvent("critical");
+				this.triggerEvent("critical",{attacker : character, attackee : this, value : lpToRemove});
 			}
-			this.triggerEvent("attack",{ lpRemoved: lpToRemove} );
+			this.triggerEvent("attack",{attacker : character, attackee : this, value : lpToRemove} );
 
 			this.LP -= lpToRemove;
 
@@ -132,21 +132,23 @@ define(["jquery","progressBar","eventEmitter"],function($,progressBarClass,event
 		heal(){
 			let manaUsed = 1 + Math.random() * (1 + this.getLevel) / (1 + this.getWisdom);
 
-			let lpRestored = this.getHealingPoints;
-			this.LP += lpRestored;
-
-			if(this.LP > this.getMaxLP){
-				this.LP = this.getMaxLP;
-			}
 
 			if(this.getMP - manaUsed < 0){
-				this.triggered("outOfMana");
+				this.triggered("outOfMana",{manaUsed : manaUsed, MP : this.getMP});
 			}else{
 				this.MP -= manaUsed;
-				this.triggerEvent("healed");
+
+				let lpRestored = this.getHealingPoints;
+				this.LP += lpRestored;
+
+				if(this.LP > this.getMaxLP){
+					this.LP = this.getMaxLP;
+				}
+				
+				this.triggerEvent("healed",{manaUsed : manaUsed, value : lpRestored });
 			}
 
-			this.triggerEvent("refresh",{lpRestored : lpRestored});
+			this.triggerEvent("refresh");
 		}
 
 		get getHealingPoints(){

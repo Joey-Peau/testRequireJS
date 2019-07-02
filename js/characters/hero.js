@@ -40,7 +40,7 @@ define(["jquery","characters/character"],function($,characterClass){
 		addExperiencePoints(exp){
 			if(this.getChance >= Math.random() * 100){
 				exp *= (1 + this.getChance / 100);
-				this.triggerEvent("chanceExp");
+				this.triggerEvent("chanceExp",{value: exp});
 			}
 
 			this.experiencePoints += exp;
@@ -56,13 +56,16 @@ define(["jquery","characters/character"],function($,characterClass){
 				this.resetLP();
 			}
 
+			this.triggerEvent("experience",{value: exp});
+
 			this.triggerEvent("refresh");
 		}
 
 		resetExpCap(){
 			//TODO next exp cap function
+			let nextExpCap = this.getLevel * 1000;
 
-			this.nextExpCap = 1000;
+			this.nextExpCap = nextExpCap;
 		}
 
 		levelUp(){
@@ -70,6 +73,8 @@ define(["jquery","characters/character"],function($,characterClass){
 			this.chooseUpgrade();
 
 			this.resetExpCap();
+
+			this.triggerEvent("levelUp",{value: this.level})
 
 			this.triggerEvent("refresh");
 		}
@@ -95,11 +100,15 @@ define(["jquery","characters/character"],function($,characterClass){
 				case "wisdom":
 					this.wisdom++;
 					break;
+				case "chance":
+					this.chance++;
+					break;
 				case "all":
 					this.strength++;
 					this.endurance++;
 					this.agility++;
 					this.wisdom++;
+					this.chance++;
 					break;
 
 			}
