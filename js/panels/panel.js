@@ -24,7 +24,7 @@ define(['jquery','bootstrap',"eventEmitter"],function($,$boot,eventEmitter){
 
 
 		triggerEvent(eventToTrigger,data){
-			this.emitter.emitEvent(eventToTrigger,data);
+			this.emitter.emit(eventToTrigger,data);
 		}
 
 		getPanel(){

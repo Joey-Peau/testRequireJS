@@ -78,7 +78,7 @@ define(['jquery','panels/panel', "progressBar"],function($,panelClass,barClass){
 				"type" : "button",
 				"title": $title,
 				"data-content": $content,
-			}).popover({
+			}).css({ display : "block", padding : "5px", margin : "5px", width : "15%", "text-align" : "left"}).popover({
 				"trigger" : "focus",
 			});
 		}

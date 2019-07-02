@@ -17,7 +17,7 @@ define(
 		let actionDiv 	= actionPanel.getPanel().addClass("topPanel");
 		let histoDiv 	= histoPanel.getPanel().addClass("bottomPanel");
 
-		actionPanel.emitter.on("heal",function(){
+		actionPanel.emitter.on("heal",function(event){
 			histoPanel.appendText("Hero healed");
 			hero.heal();
 
@@ -28,7 +28,7 @@ define(
 			alert("You are dead\n Reload the page");
 		});
 
-		actionPanel.emitter.on("attack",function(){
+		actionPanel.emitter.on("attack",function(event){
 			monster.attackedBy(hero);
 
 			if(!monster.isDead()){

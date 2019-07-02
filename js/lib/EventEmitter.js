@@ -391,6 +391,7 @@
                         this.removeListener(evt, listener.listener);
                     }
 
+
                     response = listener.listener.apply(this, args || []);
 
                     if (response === this._getOnceReturnValue()) {

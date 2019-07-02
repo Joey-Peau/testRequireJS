@@ -57,6 +57,8 @@ define(["jquery","progressBar","eventEmitter"],function($,progressBarClass,event
 			this.initMaxMP();
 			this.resetMP();
 
+			this.emitter.defineEvents(["miss","critical","attack","dead","refresh","outOfMana","healed"]);
+
 
 		}
 
@@ -199,9 +201,7 @@ define(["jquery","progressBar","eventEmitter"],function($,progressBarClass,event
 		}
 
 		triggerEvent(eventToTrigger,data){
-			this.emitter.emitEvent(eventToTrigger,data);
-
-			//console.log(this.constructor.name + " triggered " + eventToTrigger + " with data " + JSON.stringify(data));
+			this.emitter.emit(eventToTrigger,data);
 		}
 
 

@@ -15,6 +15,8 @@ define(["jquery","characters/character"],function($,characterClass){
 			this.nextExpCap = this.baseMaxExp;
 
 			this.resetLP();
+
+			this.emitter.defineEvents(["chanceExp","experience","levelUp"]);
 		}
 
 		get getExp(){
